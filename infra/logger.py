@@ -7,7 +7,10 @@ import sys
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-from python_json_logger import JsonFormatter
+from pythonjsonlogger import jsonlogger
+
+# Alias for compatibility
+JsonFormatter = jsonlogger.JsonFormatter
 
 # 全局日志器
 _logger = logging.getLogger("ai-efficiency")

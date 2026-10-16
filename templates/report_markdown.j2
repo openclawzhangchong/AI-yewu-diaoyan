@@ -1,0 +1,77 @@
+# AI业务调研提效分析报告
+
+**生成时间:** {{ report.generated_at or '未指定' }}
+
+---
+
+## 一、执行摘要
+
+- 分析部门数: {{ report.departments|length }}
+- 总机会点数: {{ report.total_opportunities }}
+- 高优先级机会点: {{ report.high_priority_opportunities }}
+
+{{ report.overall_summary }}
+
+---
+
+## 二、各部门详细分析
+
+{% for dept in report.departments %}
+
+### {{ dept.department }}
+
+**分析置信度:** {{ dept.confidence|format_percent }}
+
+**总结:** {{ dept.summary }}
+
+**痛点分析:**
+{% for pt in dept.pain_points %}
+- {{ pt }}
+{% endfor %}
+
+**AI提效机会:**
+{% for opp in dept.opportunities %}
+#### {{ opp.process }}
+- **当前流程:** {{ opp.current_process }}
+- **AI建议:** {{ opp.ai_suggestion }}
+- **预期提效:** {{ opp.expected_efficiency_gain }}
+- **实施难度:** {{ opp.difficulty }}
+- **优先级:** {{ opp.priority }}/5
+{% if opp.expected_roi %}
+- **预期ROI:** {{ opp.expected_roi }}
+{% endif %}
+{% if opp.timeline %}
+- **实施周期:** {{ opp.timeline }}
+{% endif %}
+
+{% endfor %}
+
+---
+{% endfor %}
+
+## 三、综合建议
+
+1. **短期优先**: 聚焦高优先级、低难度的提效机会，快速见效。
+2. **中期规划**: 制定跨部门协同方案，整合共享AI能力。
+3. **长期战略**: 建立AI治理框架，持续优化AI应用效果。
+4. **组织保障**: 设立AI推进小组，负责技术选型、实施和效果追踪。
+5. **人才建设**: 培养AI应用能力，加强业务培训。
+
+---
+
+## 四、附录
+
+### 分析维度说明
+
+| 维度 | 说明 |
+|------|------|
+| 重复性 | 业务环节的重复操作识别 |
+| 数据密集度 | 数据处理密集程度 |
+| 人力成本 | 人力投入成本 |
+| AI成熟度 | AI技术在该环节的成熟度 |
+| 落地难度 | 实施落地的难度（低/中/高） |
+| 提效预期 | 预期提效幅度 |
+
+---
+
+*本报告由AI业务调研提效分析系统自动生成*
