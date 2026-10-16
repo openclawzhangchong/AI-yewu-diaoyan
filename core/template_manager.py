@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 from pathlib import Path
 from typing import List, Optional
 
@@ -12,6 +13,17 @@ from infra.exceptions import TemplateError
 from infra.logger import get_logger
 
 logger = get_logger()
+
+
+def _default_template_dir() -> Path:
+    """定位 templates/ 目录：CWD > PyInstaller 解包目录 > 源码相对位置。"""
+    cwd_templates = Path("templates")
+    if cwd_templates.is_dir():
+        return cwd_templates
+    meipass = getattr(sys, "_MEIPASS", None)
+    if meipass and (Path(meipass) / "templates").is_dir():
+        return Path(meipass) / "templates"
+    return Path(__file__).resolve().parent.parent / "templates"
 
 
 def _parse_template_from_markdown(content: str, source: str) -> BusinessTemplate:
@@ -150,7 +162,7 @@ class TemplateManager:
 
     def __init__(self, template_dir: Optional[str] = None) -> None:
         self._templates: dict[str, BusinessTemplate] = {}
-        self._template_dir = Path(template_dir) if template_dir else Path("templates")
+        self._template_dir = Path(template_dir) if template_dir else _default_template_dir()
 
     def register(self, template: BusinessTemplate) -> None:
         """注册一个模板，以 title 作为 key。

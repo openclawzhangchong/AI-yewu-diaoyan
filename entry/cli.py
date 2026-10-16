@@ -4,13 +4,15 @@
     analyze   — 分析指定文件
     collect   — 交互式采集调研数据
     departments — 查看支持的部门
+    pack-skill — 打包 Skill（light/full）
     quick-start — 快速开始
 
 用法:
-    python main.py analyze --input ./调研总结.md
-    python main.py collect
-    python main.py departments
-    python main.py quick-start
+    python main.py --cli analyze --input ./调研总结.md
+    python main.py --cli collect
+    python main.py --cli departments
+    python main.py --cli pack-skill --mode light --output ./ai-efficiency-skill
+    python main.py --cli quick-start
 """
 
 from __future__ import annotations
@@ -188,6 +190,16 @@ def analyze(
         console.print("\n[cyan]步骤 3/4: 生成报告...[/cyan]")
         _print_progress(80, 100, "生成报告")
 
+        # 将单部门结果包装为完整报告（报告生成器需要 FullAnalysisReport）
+        full_report = FullAnalysisReport(
+            departments=[result],
+            total_opportunities=len(result.opportunities),
+            high_priority_opportunities=sum(
+                1 for op in result.opportunities if op.priority >= 3
+            ),
+            overall_summary=result.summary,
+        )
+
         output_path = Path(config.output.directory)
         output_path.mkdir(parents=True, exist_ok=True)
         timestamp = __import__("datetime").datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -196,14 +208,14 @@ def analyze(
         fmt = output_format or config.output.default_format
         if fmt == "excel":
             output_path = report_generator.generate_excel(
-                result, str(output_path / f"report_{timestamp}.xlsx")
+                full_report, str(output_path / f"report_{timestamp}.xlsx")
             )
         elif fmt == "json":
             output_path = report_generator.generate_json(
-                result, str(output_path / f"report_{timestamp}.json")
+                full_report, str(output_path / f"report_{timestamp}.json")
             )
         else:
-            content = report_generator.generate_markdown(result)
+            content = report_generator.generate_markdown(full_report)
             output_path = str(output_path / f"report_{timestamp}.md")
             Path(output_path).write_text(content, encoding="utf-8")
 
@@ -358,6 +370,29 @@ def departments() -> None:
             )
 
         console.print(table)
+
+
+@main.command(name="pack-skill")
+@click.option("--mode", type=click.Choice(["light", "full"]), default="light",
+              help="打包模式: light(默认, 仅文档/模板/提示词) / full(含代码与依赖)")
+@click.option("--output", "output_dir", default="./ai-efficiency-skill",
+              help="Skill 输出目录（默认: ./ai-efficiency-skill）")
+def pack_skill(mode: str, output_dir: str) -> None:
+    """将项目打包为 Skill 目录，可分发到其他 Agent 平台。"""
+    _print_header("AI业务调研提效分析系统", f"Skill 打包（{mode} 模式）")
+
+    from output.skill_packager import SkillPackager
+
+    try:
+        packager = SkillPackager()
+        if mode == "light":
+            skill_dir = packager.pack_light(output_dir)
+        else:
+            skill_dir = packager.pack_full(output_dir)
+        _print_success(f"Skill 已打包: {skill_dir}")
+    except Exception as e:
+        _print_error(f"打包失败: {e}")
+        sys.exit(1)
 
 
 @main.command()

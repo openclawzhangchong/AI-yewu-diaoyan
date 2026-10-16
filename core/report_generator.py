@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from datetime import datetime
@@ -41,8 +42,16 @@ class ReportGenerator:
             event_bus: 事件总线
         """
         self._event_bus = event_bus or EventBus()
+        templates_path = Path(templates_dir)
+        if not templates_path.is_dir():
+            meipass = getattr(sys, "_MEIPASS", None)
+            if meipass and (Path(meipass) / "templates").is_dir():
+                templates_path = Path(meipass) / "templates"
+            else:
+                src_templates = Path(__file__).resolve().parent.parent / "templates"
+                templates_path = src_templates if src_templates.is_dir() else templates_path
         self._env = Environment(
-            loader=FileSystemLoader(templates_dir),
+            loader=FileSystemLoader(str(templates_path)),
             autoescape=False,
             trim_blocks=True,
             lstrip_blocks=True,

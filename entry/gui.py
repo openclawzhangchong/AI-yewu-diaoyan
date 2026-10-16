@@ -295,17 +295,29 @@ class App:
             Path(output_dir).mkdir(parents=True, exist_ok=True)
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
+            # 报告生成器需要 FullAnalysisReport，将单部门结果包装
+            from domain.analysis import FullAnalysisReport
+
+            full_report = FullAnalysisReport(
+                departments=[result],
+                total_opportunities=len(result.opportunities),
+                high_priority_opportunities=sum(
+                    1 for op in result.opportunities if op.priority >= 3
+                ),
+                overall_summary=result.summary,
+            )
+
             if format_choice == "Excel":
                 output_path = self.report_generator.generate_excel(
-                    result, f"{output_dir}/report_{timestamp}.xlsx"
+                    full_report, f"{output_dir}/report_{timestamp}.xlsx"
                 )
             elif format_choice == "JSON":
                 output_path = self.report_generator.generate_json(
-                    result, f"{output_dir}/report_{timestamp}.json"
+                    full_report, f"{output_dir}/report_{timestamp}.json"
                 )
             else:
                 # Markdown
-                content = self.report_generator.generate_markdown(result)
+                content = self.report_generator.generate_markdown(full_report)
                 output_path = f"{output_dir}/report_{timestamp}.md"
                 Path(output_path).write_text(content, encoding="utf-8")
 

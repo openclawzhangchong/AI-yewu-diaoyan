@@ -26,7 +26,7 @@ class AnalysisResult:
     """单个部门/业务环节的AI分析结果"""
 
     department: str  # 部门名称
-    process: str  # 业务环节
+    process: str = ""  # 业务环节
     pain_points: List[str] = field(default_factory=list)  # 识别到的痛点
     opportunities: List[OpportunityPoint] = field(default_factory=list)  # AI提效机会
     summary: str = ""  # 分析总结

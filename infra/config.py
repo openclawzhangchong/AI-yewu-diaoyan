@@ -37,6 +37,7 @@ class ConfigManager:
     def __init__(self, config_path: str = "config.yaml") -> None:
         self._config = DomainConfig()
         self._config_path = config_path
+        self._pending_args: dict = {}
 
     def load(self) -> DomainConfig:
         """按优先级链加载配置，返回最终 Config 对象"""
@@ -45,7 +46,9 @@ class ConfigManager:
         self._load_from_yaml()
         # 3. 环境变量
         self._load_from_env()
-        # 4. 命令行参数（由 set_from_args 处理）
+        # 4. 命令行参数（由 set_from_args 处理，优先级最高，重新应用）
+        if self._pending_args:
+            self._apply_args()
 
         return self._config
 
@@ -137,7 +140,17 @@ class ConfigManager:
             --max-concurrent, --timeout
             --log-level, --log-file
             --output-dir, --output-format
+
+        立即应用到当前配置，并缓存到 ``self._pending_args``：
+        若之后再次调用 :meth:`load`，命令行参数会在 yaml/环境变量
+        加载后重新应用，保证 "命令行 > 环境变量 > yaml" 的优先级。
         """
+        self._pending_args = dict(args)
+        self._apply_args()
+
+    def _apply_args(self) -> None:
+        """应用缓存的命令行参数到当前配置。"""
+        args = self._pending_args
         if "provider" in args and args["provider"]:
             self._config.model.provider = args["provider"]
         if "api_key" in args and args["api_key"]:
