@@ -74,14 +74,16 @@ Thumbs.db
 logs/
 *.log
 
-# Output
-output/
-*.mdx
-*.xlsx
-*.json
+# Output（只忽略运行时生成的报告，保留源码）
+output/reports/
+output/*.xlsx
 
-# Config with secrets
-config.yaml
+# 运行时生成数据
+collected_data*.json
+analysis_report*.json
+
+# Config with secrets（示例配置可提交，本地密钥配置忽略）
+config.local.yaml
 .env
 .env.local
 .env.*.local

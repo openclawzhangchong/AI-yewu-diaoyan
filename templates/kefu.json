@@ -1,0 +1,47 @@
+{
+  "title": "客服部业务调研模板",
+  "description": "适用于客服部，调研维度：咨询接待、投诉处理、工单流转、知识库维护",
+  "department_hint": "客服部",
+  "questions": [
+    {
+      "id": "Q1",
+      "text": "请描述咨询接待、投诉处理、工单流转、知识库维护的当前操作流程（渠道、工具、升级机制）",
+      "type": "business_process",
+      "required": true,
+      "options": [],
+      "description": "例如：用户进线→接待分派→工单创建→处理跟进→回访关闭→知识沉淀"
+    },
+    {
+      "id": "Q2",
+      "text": "当前客服团队的人力配置与单次接待/处理耗时大致是多少（坐席人数、平均处理时长、峰值排队情况）",
+      "type": "resource",
+      "required": false,
+      "options": [],
+      "description": "可说明高峰时段的排队与溢出情况"
+    },
+    {
+      "id": "Q3",
+      "text": "目前最突出的痛点是什么（如重复咨询多、知识库更新滞后、工单跨部门流转慢、投诉升级难等）",
+      "type": "pain_point",
+      "required": true,
+      "options": [],
+      "description": "请按发生频率与影响程度排序"
+    },
+    {
+      "id": "Q4",
+      "text": "日均/月均咨询量与工单量大约处于什么水平，产生频次如何",
+      "type": "business_process",
+      "required": true,
+      "options": ["每天大量（>100单）", "每天少量（<100单）", "每周汇总", "每月汇总"],
+      "description": "选择最接近的咨询/工单量级"
+    },
+    {
+      "id": "Q5",
+      "text": "知识库的维护频率如何，由谁负责更新",
+      "type": "business_process",
+      "required": false,
+      "options": ["每天", "每周", "每月", "不定期/无人维护"],
+      "description": "说明知识条目数量级与更新责任人"
+    }
+  ]
+}

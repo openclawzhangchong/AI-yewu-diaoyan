@@ -1,0 +1,47 @@
+{
+  "title": "运营部业务调研模板",
+  "description": "适用于运营部，调研维度：用户增长、内容分发、活动运营、数据分析",
+  "department_hint": "运营部",
+  "questions": [
+    {
+      "id": "Q1",
+      "text": "请描述当前用户增长、内容分发、活动运营与数据分析的日常业务流程（各环节由谁负责、使用哪些工具、上下游如何衔接）",
+      "type": "business_process",
+      "required": true,
+      "options": [],
+      "description": "尽量分环节描述，例如：活动策划→内容排期→发布分发→数据回收→复盘"
+    },
+    {
+      "id": "Q2",
+      "text": "上述环节中耗时最多的人力投入情况如何（各岗位大致人数、单环节耗时、加班频率）",
+      "type": "resource",
+      "required": false,
+      "options": [],
+      "description": "可估计人均耗时或周/月工时，说明主要瓶颈环节"
+    },
+    {
+      "id": "Q3",
+      "text": "当前流程中最大的痛点是什么（如数据口径不一致、活动复盘慢、内容生产依赖人工等）",
+      "type": "pain_point",
+      "required": true,
+      "options": [],
+      "description": "请按影响程度排序列出 1-3 个最突出问题"
+    },
+    {
+      "id": "Q4",
+      "text": "日常运营相关数据（用户数据、内容量、活动数据）的产生频次大约是多少",
+      "type": "business_process",
+      "required": true,
+      "options": ["每天", "每周", "每月", "每季/不定期"],
+      "description": "选择主要数据产出节奏；若有多个节奏可补充说明"
+    },
+    {
+      "id": "Q5",
+      "text": "对 AI 工具提效的期望是什么（最希望 AI 帮助完成哪些运营工作）",
+      "type": "expectation",
+      "required": false,
+      "options": ["自动生成内容", "智能数据报表", "自动化活动复盘", "其他"],
+      "description": "可多选或补充具体场景"
+    }
+  ]
+}

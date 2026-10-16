@@ -1,0 +1,47 @@
+{
+  "title": "仓储部业务调研模板",
+  "description": "适用于仓储部，调研维度：入库管理、出库拣货、库存盘点、物流调度",
+  "department_hint": "仓储部",
+  "questions": [
+    {
+      "id": "Q1",
+      "text": "请描述入库、出库拣货、库存盘点、物流调度的当前操作流程（使用系统/单据/Excel、各环节衔接方式）",
+      "type": "business_process",
+      "required": true,
+      "options": [],
+      "description": "例如：到货验收→上架→订单波次→拣货复核→打包交接物流→库存差异处理"
+    },
+    {
+      "id": "Q2",
+      "text": "仓储现场的人员配置与单环节耗时大致如何（各岗位人数、单笔订单拣货时长、盘点耗时）",
+      "type": "resource",
+      "required": false,
+      "options": [],
+      "description": "可说明高峰期是否外包或加人"
+    },
+    {
+      "id": "Q3",
+      "text": "当前最突出的痛点是什么（如错发漏发、库存账实不符、单据手工录入易错、调度依赖经验等）",
+      "type": "pain_point",
+      "required": true,
+      "options": [],
+      "description": "请按发生频率与损失影响排序"
+    },
+    {
+      "id": "Q4",
+      "text": "出入库单据与盘点作业的频次大致是",
+      "type": "business_process",
+      "required": true,
+      "options": ["每天", "每周", "每月", "不定期"],
+      "description": "选择主要作业节奏；盘点若为周期作业可补充说明周期"
+    },
+    {
+      "id": "Q5",
+      "text": "日均可处理的出入库单量/件量大约处于什么水平，峰值是多少",
+      "type": "business_process",
+      "required": false,
+      "options": ["每天 <100件", "每天 100-1000件", "每天 1000-10000件", "每天 >10000件"],
+      "description": "选择最接近的量级并补充大促/峰值倍数"
+    }
+  ]
+}

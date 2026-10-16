@@ -1,0 +1,47 @@
+{
+  "title": "财务部业务调研模板",
+  "description": "适用于财务部，调研维度：发票处理、报销审核、账务对账、报表生成",
+  "department_hint": "财务部",
+  "questions": [
+    {
+      "id": "Q1",
+      "text": "请描述发票处理、报销审核、账务对账、报表生成的当前流程（使用系统、单据流转、审批链条）",
+      "type": "business_process",
+      "required": true,
+      "options": [],
+      "description": "例如：发票验真登记→报销贴单→多级审批→出纳付款→银行/往来对账→月报生成"
+    },
+    {
+      "id": "Q2",
+      "text": "上述流程中各环节的人力投入与耗时大致如何（会计/出纳/审核各几人，单张报销/月度结账耗时）",
+      "type": "resource",
+      "required": false,
+      "options": [],
+      "description": "可说明月末/季末集中加班情况"
+    },
+    {
+      "id": "Q3",
+      "text": "当前最痛的点是什么（如手工录票易错、报销退回率高、对账差异难排查、报表依赖手工汇总等）",
+      "type": "pain_point",
+      "required": true,
+      "options": [],
+      "description": "请按发生频率与差错影响排序"
+    },
+    {
+      "id": "Q4",
+      "text": "日常账务作业（收票、报销、对账）与报表生成的频次大致是",
+      "type": "business_process",
+      "required": true,
+      "options": ["每天", "每周", "每月", "每季/不定期"],
+      "description": "选择主要作业节奏；报表可补充月报/季报/年报说明"
+    },
+    {
+      "id": "Q5",
+      "text": "日均处理的发票/报销单据量大约处于什么水平",
+      "type": "business_process",
+      "required": false,
+      "options": ["每天 <50张", "每天 50-200张", "每天 200-1000张", "每天 >1000张"],
+      "description": "选择最接近的量级并补充月底/季末峰值"
+    }
+  ]
+}
