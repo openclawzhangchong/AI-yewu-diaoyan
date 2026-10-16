@@ -171,11 +171,11 @@ class TestCLIAnalyzeMissingKey:
     ):
         """缺 api_key：LLMError 在 create_llm_client(...)（analyze 步骤 2 之前）抛出。
 
-        实际行为（贴合实现）：该调用位于 cli.py 的 try/except 之外，
-        未捕获的 LLMError 会传播到 CliRunner → result.exit_code == 1，
-        且 result.exception 为 LLMError(code="LLM_API_KEY_MISSING")。"""
+        实际行为（贴合实现）：analyze 内部捕获 AppError 并友好报错后
+        sys.exit(1) → CliRunner 捕获 SystemExit → result.exit_code == 1，
+        输出中带出机器可读 code（LLM_API_KEY_MISSING）。"""
         import entry.cli as cli_module
-        from infra.llm_client import LLMError, create_llm_client as real_factory
+        from infra.llm_client import create_llm_client as real_factory
 
         monkeypatch.setattr(cli_module, "create_llm_client", real_factory)
         # 隔离配置里 api_key=""，且 isolate_env fixture 已删除 LLM_API_KEY 环境变量
@@ -189,19 +189,19 @@ class TestCLIAnalyzeMissingKey:
             ],
         )
         assert result.exit_code == 1
-        assert isinstance(result.exception, LLMError), f"未捕获异常应为 LLMError: {result.exception!r}"
-        assert result.exception.code == "LLM_API_KEY_MISSING"
-        assert "缺少 LLM api_key" in str(result.exception)
-        # 错误发生在 LLM 客户端构造阶段，尚未进入 try 块 → 输出中无"分析失败"文案
-        assert "分析失败" not in result.output
+        # 友好报错文案 + 机器可读 code
+        assert "缺少 LLM api_key" in result.output
+        assert "LLM_API_KEY_MISSING" in result.output
+        # 无裸 traceback（AppError 已被 analyze 捕获）
+        assert "Traceback" not in result.output
 
     def test_analyze_unknown_provider_fails(
         self, runner, cli_env, tmp_path, monkeypatch, md_fixture_path
     ):
-        """--provider 未知 + 有 api_key：LLMClient 构造即抛 LLMError('未知的模型提供商')
-        → CliRunner 捕获 → exit 1，result.exception 为 LLMError（默认 code LLM_ERROR）。"""
+        """--provider 未知 + 有 api_key：LLMClient 构造即抛 LLMError('未知的模型提供商')，
+        被 analyze 捕获后友好报错并 sys.exit(1)。"""
         import entry.cli as cli_module
-        from infra.llm_client import LLMError, create_llm_client as real_factory
+        from infra.llm_client import create_llm_client as real_factory
 
         monkeypatch.setattr(cli_module, "create_llm_client", real_factory)
         monkeypatch.chdir(tmp_path)
@@ -216,8 +216,8 @@ class TestCLIAnalyzeMissingKey:
             ],
         )
         assert result.exit_code == 1
-        assert isinstance(result.exception, LLMError)
-        assert "未知的模型提供商" in str(result.exception)
+        assert "未知的模型提供商" in result.output
+        assert "Traceback" not in result.output
 
     def test_analyze_with_api_key_needs_real_network(self, runner, cli_env, tmp_path, monkeypatch):
         """给了 api_key 与 provider=qwen：LLMClient 构造成功（不联网），

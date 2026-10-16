@@ -38,6 +38,7 @@ from domain.config import ModelConfig
 
 from infra.config import ConfigManager
 from infra.event_bus import EventBus
+from infra.exceptions import AppError
 from infra.llm_client import LLMClient, create_llm_client
 from infra.logger import setup_logging
 
@@ -141,14 +142,18 @@ def analyze(
     template_manager = TemplateManager()
     data_collector = DataCollector(event_bus=event_bus)
 
-    # 创建 LLM 客户端
+    # 创建 LLM 客户端（缺 Key/未知 provider 时友好报错，避免裸 traceback）
     model_config = ModelConfig(
         provider=config.model.provider,
         api_key=config.model.api_key,
         base_url=config.model.base_url,
         model_name=config.model.model_name,
     )
-    llm_client = create_llm_client(model_config)
+    try:
+        llm_client = create_llm_client(model_config)
+    except AppError as e:
+        _print_error(f"{e.message}（code={e.code}）")
+        sys.exit(1)
 
     # 创建分析引擎
     analysis_engine = AIAnalysisEngine(

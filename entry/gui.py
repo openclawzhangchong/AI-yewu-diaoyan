@@ -58,14 +58,18 @@ class App:
         self.template_manager = TemplateManager()
         self.data_collector = DataCollector(event_bus=self.event_bus)
 
-        # 创建 LLM 客户端
+        # 创建 LLM 客户端（缺 API Key 时不阻塞 GUI 启动，提交分析时再校验）
         model_config = ModelConfig(
             provider=self.config.model.provider,
             api_key=self.config.model.api_key,
             base_url=self.config.model.base_url,
             model_name=self.config.model.model_name,
         )
-        self.llm_client = create_llm_client(model_config)
+        self.llm_client = None
+        try:
+            self.llm_client = create_llm_client(model_config)
+        except Exception as e:
+            logger.warning("LLM 客户端未就绪，提交分析前需配置 API Key: %s", e)
 
         # 创建分析引擎
         self.analysis_engine = AIAnalysisEngine(
@@ -285,6 +289,14 @@ class App:
 
             # 4. 执行 AI 分析
             self._update_status("正在进行 AI 分析（可能需要几分钟）...")
+            if self.llm_client is None:
+                self.root.after(0, lambda: messagebox.showerror(
+                    "缺少 API Key",
+                    "未配置 LLM API Key，无法执行 AI 分析。\n请设置环境变量 LLM_API_KEY（或编辑 config.yaml 填入 model.api_key）后重启程序。",
+                ))
+                self._update_status("未配置 API Key")
+                self._update_buttons(state="idle")
+                return
             result = asyncio.run(self.analysis_engine.analyze_department(dept_data))
 
             # 5. 生成报告

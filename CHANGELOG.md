@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.8.0] - 2026-10-17
+
+### Added
+- PyInstaller 端到端打包验证通过：`--onefile --add-data "templates;templates" --add-data "config.yaml;." main.py`，窗口版（双击 GUI）与控制台版均实测
+- 开发手册「PyInstaller打包命令」章节更新为实测命令与要点（Windows 分号分隔符、_MEIPASS 回退说明）
+
+### Fixed
+- GUI 缺 API Key 时启动即崩溃（create_llm_client 抛 LLMError）：改为启动时不阻塞，提交分析时再校验并弹窗提示
+- CLI `analyze` 缺 Key 时在 try 块外抛 LLMError 导致裸 traceback：改为在 analyze 命令内捕获，输出友好错误并退出码 1
+
+---
+
 ## [v0.7.0] - 2026-10-16
 
 ### Added
