@@ -78,7 +78,6 @@ def main() -> None:
 @main.command()
 @click.option("--input", "input_file", required=True, help="输入文件路径 (.md/.txt/.docx/.json)")
 @click.option("--output-dir", default=None, help="输出目录（默认: ./output）")
-@click.option("--output-format", default=None, help="输出格式 (markdown/excel/json)")
 @click.option("--model-name", default=None, help="AI 模型名称")
 @click.option("--api-key", default=None, help="API 密钥")
 @click.option("--base-url", default=None, help="API 基础 URL")

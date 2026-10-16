@@ -43,6 +43,11 @@ class LLMClient:
 
     def _select_handler(self, config: ModelConfig):
         """根据 provider 选择对应的处理策略"""
+        if not config.api_key:
+            raise LLMError(
+                "缺少 LLM api_key，请通过环境变量（如 LLM_API_KEY / QWEN_API_KEY）或 config.yaml 配置",
+                code="LLM_API_KEY_MISSING",
+            )
         handlers = {
             "openai": OpenAIHandler,
             "qwen": QwenHandler,

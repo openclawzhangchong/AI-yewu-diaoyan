@@ -122,6 +122,7 @@ class ReportBuilder:
             REPORT_GENERATED,
             {
                 "filepath": str(filepath),
+                "output_path": str(filepath),
                 "format": fmt,
                 "total_opportunities": analysis_report.total_opportunities,
                 "high_priority_opportunities": analysis_report.high_priority_opportunities,

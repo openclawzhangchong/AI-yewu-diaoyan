@@ -23,7 +23,7 @@ _SKILL_CATEGORY = "business-analysis"
 _SKILL_ENTRY_POINT = "entry.main:main"
 
 # 完整模式下需要一并导出的 Python 代码目录
-_CODE_DIRS = ("domain", "core", "infra", "entry")
+_CODE_DIRS = ("domain", "core", "infra", "entry", "output")
 _DEPENDENCIES_FILE = "requirements.txt"
 
 

@@ -14,30 +14,26 @@
 
 from __future__ import annotations
 
+import asyncio
+import logging
 import os
 import subprocess
 import sys
 import threading
 import tkinter as tk
+from datetime import datetime
 from pathlib import Path
 from tkinter import filedialog, messagebox, ttk
 
 from domain.config import ModelConfig
-from domain.template import QuestionType
 
 from core.ai_engine import AIAnalysisEngine
 from core.data_collector import DataCollector
 from core.report_generator import ReportGenerator
 from core.template_manager import TemplateManager
 
-from infra.event_bus import (
-    ANALYSIS_DONE,
-    DATA_COLLECTED,
-    REPORT_GENERATED,
-    TEMPLATE_LOADED,
-    EventBus,
-)
-from infra.llm_client import LLMClient, create_llm_client
+from infra.event_bus import EventBus
+from infra.llm_client import create_llm_client
 from infra.config import ConfigManager
 from infra.logger import get_logger, setup_logging
 
@@ -61,12 +57,6 @@ class App:
         self.event_bus = EventBus()
         self.template_manager = TemplateManager()
         self.data_collector = DataCollector(event_bus=self.event_bus)
-
-        # 注册事件回调
-        self.event_bus.subscribe(TEMPLATE_LOADED, self._on_template_loaded)
-        self.event_bus.subscribe(DATA_COLLECTED, self._on_data_collected)
-        self.event_bus.subscribe(ANALYSIS_DONE, self._on_analysis_done)
-        self.event_bus.subscribe(REPORT_GENERATED, self._on_report_generated)
 
         # 创建 LLM 客户端
         model_config = ModelConfig(
@@ -254,16 +244,25 @@ class App:
         )
         thread.start()
 
+    def _update_progress(self, value: float) -> None:
+        """线程安全地更新进度条。"""
+        self.root.after(0, lambda v=value: self._set_progress(v))
+
+    def _set_progress(self, value: float) -> None:
+        """主线程更新进度条。"""
+        self._progress_value.set(value)
+        self.progress_label.configure(text=f"{int(value)}%")
+
     def _run_analysis(self, input_file: str) -> None:
         """在后台线程中执行完整分析流程。"""
         try:
             # 1. 解析文件
-            self._progress_value.set(10.0)
+            self._update_progress(10.0)
             self._update_status("正在解析调研数据...")
             parsed_data = self.data_collector.parse_file(input_file)
 
             # 2. 验证数据
-            self._progress_value.set(30.0)
+            self._update_progress(30.0)
             self._update_status("正在验证数据...")
             templates = self.template_manager.list_templates()
             if templates:
@@ -286,7 +285,7 @@ class App:
 
             # 4. 执行 AI 分析
             self._update_status("正在进行 AI 分析（可能需要几分钟）...")
-            result = self.analysis_engine.analyze_department(dept_data)
+            result = asyncio.run(self.analysis_engine.analyze_department(dept_data))
 
             # 5. 生成报告
             self._progress_value.set(80.0)
@@ -294,7 +293,7 @@ class App:
             format_choice = self._output_format.get()
             output_dir = self.config.output.directory
             Path(output_dir).mkdir(parents=True, exist_ok=True)
-            timestamp = __import__("datetime").datetime.now().strftime("%Y%m%d_%H%M%S")
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
             if format_choice == "Excel":
                 output_path = self.report_generator.generate_excel(
@@ -399,23 +398,6 @@ class _LogHandler(logging.Handler):
             self._text.see(tk.END)
         except Exception:
             self.handleError(record)
-
-
-def _on_template_loaded(data: dict) -> None:
-    logger.info("模板已加载: %s", data.get("template", "未知"))
-
-
-def _on_data_collected(data: dict) -> None:
-    logger.info("数据已采集: %s", data.get("template", "未知"))
-
-
-def _on_analysis_done(data: dict) -> None:
-    dept = data.get("department", "未知")
-    logger.info("部门 %s 分析完成", dept)
-
-
-def _on_report_generated(data: dict) -> None:
-    logger.info("报告已生成: %s", data.get("output_path", "未知"))
 
 
 def main() -> None:

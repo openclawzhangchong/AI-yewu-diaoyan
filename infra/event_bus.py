@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 import threading
 from typing import Any, Callable
 
@@ -57,11 +58,17 @@ class EventBus:
         for handler in handlers:
             try:
                 if asyncio.iscoroutinefunction(handler):
-                    asyncio.get_event_loop().run_until_complete(handler(data))
+                    try:
+                        loop = asyncio.get_running_loop()
+                        loop.create_task(handler(data))
+                    except RuntimeError:
+                        # 无运行中的事件循环：新开一个循环执行
+                        asyncio.run(handler(data))
                 else:
                     handler(data)
-            except Exception:
-                pass  # 单个 handler 出错不影响其他 handler
+            except Exception as e:
+                logger = logging.getLogger(__name__)
+                logger.debug("事件 handler 执行失败 [%s]: %s", event_type, e)
 
     def publish_async(self, event_type: str, data: Any = None) -> None:
         """异步发布事件（非阻塞）"""
