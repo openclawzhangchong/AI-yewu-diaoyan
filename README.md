@@ -127,5 +127,8 @@ uv run pytest -q
 uv run python scripts/e2e_real_llm.py
 ```
 
+## 产品演示页
+浏览器直接打开 `docs/index.html`（无需任何依赖）：能力总览、三步使用流程、真实报告样例、支持矩阵、Agent 接入设计、质量保障。
+
 ## 许可证
 MIT License

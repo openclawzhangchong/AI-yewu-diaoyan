@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI业务调研提效分析系统 — 产品演示</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --panel2: #1c2333;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #9da5b4;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --orange: #d29922;
+    --pink: #f778ba;
+    --purple: #a371f7;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+    line-height: 1.7;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- 顶部导航 ---------- */
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(13,17,23,.92); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  nav .wrap { display: flex; align-items: center; gap: 18px; height: 56px; }
+  nav .logo { font-weight: 700; white-space: nowrap; }
+  nav .logo span { color: var(--accent); }
+  nav ul { list-style: none; display: flex; gap: 16px; flex: 1; overflow-x: auto; }
+  nav ul a { color: var(--muted); font-size: 14px; white-space: nowrap; }
+  nav ul a:hover { color: var(--text); text-decoration: none; }
+  nav .badge { font-size: 12px; color: var(--green); border: 1px solid var(--green); padding: 2px 10px; border-radius: 20px; white-space: nowrap; }
+
+  /* ---------- Hero ---------- */
+  header {
+    padding: 84px 0 64px;
+    background:
+      radial-gradient(ellipse 60% 80% at 70% 10%, rgba(88,166,255,.15), transparent),
+      radial-gradient(ellipse 50% 70% at 20% 90%, rgba(163,113,247,.12), transparent);
+  }
+  header h1 { font-size: 40px; line-height: 1.3; }
+  header h1 em { font-style: normal; color: var(--accent); }
+  header .sub { color: var(--muted); font-size: 17px; margin: 18px 0 30px; max-width: 760px; }
+  .pipeline {
+    display: flex; align-items: center; gap: 0; flex-wrap: wrap;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 14px; padding: 18px; margin-bottom: 30px;
+  }
+  .pipe-node {
+    flex: 1; min-width: 140px; text-align: center; padding: 10px 8px;
+  }
+  .pipe-node .ic { font-size: 26px; }
+  .pipe-node .t { font-weight: 600; margin-top: 4px; }
+  .pipe-node .d { font-size: 12px; color: var(--muted); }
+  .pipe-arrow { color: var(--accent); font-size: 20px; padding: 0 6px; }
+  .btns { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 11px 24px; border-radius: 8px;
+    font-weight: 600; font-size: 15px; border: 1px solid var(--border);
+    color: var(--text); background: var(--panel2);
+  }
+  .btn:hover { border-color: var(--accent); text-decoration: none; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #0d1117; }
+  .btn.primary:hover { filter: brightness(1.1); }
+
+  /* ---------- 章节 ---------- */
+  section { padding: 64px 0; border-top: 1px solid var(--border); }
+  section:first-of-type { border-top: none; }
+  h2 { font-size: 28px; margin-bottom: 6px; }
+  .lead { color: var(--muted); margin-bottom: 30px; }
+  .lead .tag {
+    display: inline-block; font-size: 12px; letter-spacing: 2px;
+    color: var(--accent); font-weight: 700; margin-bottom: 8px;
+  }
+
+  /* ---------- 卡片 ---------- */
+  .grid { display: grid; gap: 18px; }
+  .grid.c3 { grid-template-columns: repeat(3, 1fr); }
+  .grid.c2 { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 720px) { .grid.c3, .grid.c2 { grid-template-columns: 1fr; } header h1 { font-size: 30px; } }
+  .card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; padding: 22px;
+    transition: transform .15s, border-color .15s;
+  }
+  .card:hover { transform: translateY(-3px); border-color: #484f58; }
+  .card h3 { font-size: 17px; margin: 8px 0; }
+  .card p { color: var(--muted); font-size: 14px; }
+  .card .ic { font-size: 30px; }
+  .card .pill {
+    display: inline-block; font-size: 11px; font-weight: 700;
+    padding: 2px 10px; border-radius: 12px; margin-bottom: 4px;
+  }
+  .pill.g { background: rgba(63,185,80,.15); color: var(--green); }
+  .pill.b { background: rgba(88,166,255,.15); color: var(--accent); }
+  .pill.o { background: rgba(210,153,34,.15); color: var(--orange); }
+  .pill.p { background: rgba(163,113,247,.15); color: var(--purple); }
+  .pill.k { background: rgba(247,120,186,.15); color: var(--pink); }
+
+  /* ---------- 使用步骤 ---------- */
+  .steps { counter-reset: step; }
+  .step {
+    display: flex; gap: 18px; padding: 20px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .step:last-child { border-bottom: none; }
+  .step .num {
+    flex-shrink: 0; width: 44px; height: 44px; border-radius: 50%;
+    background: var(--panel2); border: 1px solid var(--accent);
+    color: var(--accent); font-size: 20px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .step h3 { font-size: 17px; margin-bottom: 6px; }
+  .step p { color: var(--muted); font-size: 14.5px; }
+  .step .hint { font-size: 13px; color: var(--muted); margin-top: 8px; }
+
+  /* ---------- 代码块 ---------- */
+  .codeblock {
+    position: relative;
+    background: #0a0e14; border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px; margin-top: 12px;
+    font-family: "Cascadia Code", Consolas, monospace; font-size: 13.5px;
+    white-space: pre; overflow-x: auto; color: #c9d1d9;
+  }
+  .codeblock .cm { color: #6e7681; }
+  .codeblock .cmd { color: #7ee787; }
+  .copybtn {
+    position: absolute; top: 10px; right: 10px;
+    background: var(--panel2); color: var(--muted);
+    border: 1px solid var(--border); border-radius: 6px;
+    font-size: 12px; padding: 4px 12px; cursor: pointer;
+  }
+  .copybtn:hover { color: var(--text); border-color: var(--accent); }
+
+  /* ---------- 矩阵表 ---------- */
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; font-size: 13px; }
+  td.ok { color: var(--green); font-weight: 700; }
+
+  /* ---------- 报告样例 ---------- */
+  .report-demo {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+  }
+  .report-demo .bar {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--panel2); padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .report-demo .bar i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .report-demo .bar i.r { background: #f85149; }
+  .report-demo .bar i.y { background: #d29922; }
+  .report-demo .bar i.g { background: #3fb950; }
+  .report-demo .bar .fname { margin-left: 8px; font-size: 13px; color: var(--muted); font-family: Consolas, monospace; }
+  .report-demo .body { padding: 26px 30px; }
+  .report-demo h4 { font-size: 18px; margin-bottom: 14px; }
+  .report-demo .meta { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+  .kpis { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
+  .kpi {
+    flex: 1; min-width: 130px; background: #0a0e14;
+    border: 1px solid var(--border); border-radius: 10px; padding: 14px;
+    text-align: center;
+  }
+  .kpi .v { font-size: 26px; font-weight: 800; color: var(--accent); }
+  .kpi .v.gr { color: var(--green); }
+  .kpi .v.or { color: var(--orange); }
+  .kpi .l { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .opp {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: #0a0e14; border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 16px; margin-bottom: 12px;
+  }
+  .opp .pri {
+    flex-shrink: 0; font-weight: 800; font-size: 13px;
+    border-radius: 8px; padding: 4px 10px; margin-top: 2px;
+  }
+  .pri.p5 { background: rgba(248,81,73,.18); color: #f85149; }
+  .pri.p4 { background: rgba(210,153,34,.18); color: var(--orange); }
+  .opp .tt { font-weight: 700; }
+  .opp .dd { font-size: 13px; color: var(--muted); margin-top: 3px; }
+
+  /* ---------- 统计条 ---------- */
+  .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+  @media (max-width: 720px) { .stats { grid-template-columns: repeat(2,1fr); } }
+  .stat { text-align: center; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 22px 10px; }
+  .stat .v { font-size: 32px; font-weight: 800; color: var(--green); }
+  .stat .l { color: var(--muted); font-size: 13px; margin-top: 4px; }
+
+  footer { padding: 40px 0 60px; text-align: center; color: var(--muted); font-size: 13.5px; }
+  footer .repo { font-family: Consolas, monospace; color: var(--accent); }
+
+  .flash { animation: flash .4s; }
+  @keyframes flash { 0% { background: rgba(88,166,255,.35); } 100% { background: transparent; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="logo">AI业务调研<span>提效分析</span></div>
+    <ul>
+      <li><a href="#what">能力</a></li>
+      <li><a href="#how">三步使用</a></li>
+      <li><a href="#demo">报告样例</a></li>
+      <li><a href="#matrix">支持矩阵</a></li>
+      <li><a href="#agent">Agent 接入</a></li>
+      <li><a href="#quality">质量保障</a></li>
+    </ul>
+    <a class="badge" href="https://github.com/openclawzhangchong/AI-yewu-diaoyan">GitHub ★</a>
+  </div>
+</nav>
+
+<header>
+  <div class="wrap">
+    <h1>调研资料扔进去，<em>提效报告</em>自动出</h1>
+    <p class="sub">
+      各部门（运营 / 客服 / 设计 / 仓储 / 财务）的业务调研资料——TXT、Markdown、Word、JSON 均可，
+      交给本系统，大模型自动识别业务环节痛点与 <strong>AI 提效机会点</strong>，
+      一键生成 Markdown / Excel / JSON 三份格式的正式报告。
+      人双击窗口就能用，AI Agent 一条命令就能接。
+    </p>
+    <div class="pipeline">
+      <div class="pipe-node"><div class="ic">📄</div><div class="t">调研资料</div><div class="d">.md / .txt / .docx / .json</div></div>
+      <div class="pipe-arrow">➜</div>
+      <div class="pipe-node"><div class="ic">🧠</div><div class="t">LLM 分析</div><div class="d">OpenAI 兼容协议 · 任意模型</div></div>
+      <div class="pipe-arrow">➜</div>
+      <div class="pipe-node"><div class="ic">⚡</div><div class="t">机会点识别</div><div class="d">痛点 · 建议 · ROI · 优先级</div></div>
+      <div class="pipe-arrow">➜</div>
+      <div class="pipe-node"><div class="ic">📊</div><div class="t">正式报告</div><div class="d">Markdown / Excel / JSON</div></div>
+    </div>
+    <div class="btns">
+      <a class="btn primary" href="https://github.com/openclawzhangchong/AI-yewu-diaoyan">GitHub 仓库（开源 · MIT）</a>
+      <a class="btn" href="https://github.com/openclawzhangchong/AI-yewu-diaoyan/releases">下载 Windows 安装包（exe）</a>
+      <a class="btn" href="#how">快速上手 ↓</a>
+    </div>
+  </div>
+</header>
+
+<section id="what">
+  <div class="wrap">
+    <h2>它能干什么</h2>
+    <p class="lead"><span class="tag">核心能力</span>五种产品形态，一套内核</p>
+    <div class="grid c3">
+      <div class="card">
+        <div class="ic">🖥️</div>
+        <h3>傻瓜式 GUI</h3>
+        <p>Tkinter 图形界面：选文件 → 选格式 → 点提交 → 等报告。非技术同事、领导演示零门槛，双击 exe 即可运行。</p>
+        <span class="pill g">人用</span>
+      </div>
+      <div class="card">
+        <div class="ic">⌨️</div>
+        <h3>CLI 命令行</h3>
+        <p>analyze / collect / departments / pack-skill / quick-start 五个子命令，全流程脚本化，退出码 + 机器可读错误 code，自动化友好。</p>
+        <span class="pill b">脚本 / CI</span>
+      </div>
+      <div class="card">
+        <div class="ic">🧩</div>
+        <h3>Skill 打包分发</h3>
+        <p>一条命令把调研能力打包成 AI 平台 Skill（light / full 两种规格），分发给 ZCode / Workbody 等 Agent 平台直接使用。</p>
+        <span class="pill p">Agent 平台</span>
+      </div>
+      <div class="card">
+        <div class="ic">🏢</div>
+        <h3>内置 5 部门调研模板</h3>
+        <p>运营 / 客服 / 设计 / 仓储 / 财务的调研维度开箱即用（咨询接待、发票处理、出入库拣货……），也可自定义扩展。</p>
+        <span class="pill o">业务开箱即用</span>
+      </div>
+      <div class="card">
+        <div class="ic">🔌</div>
+        <h3>任意 LLM 可接</h3>
+        <p>OpenAI 兼容协议 + 内置 Qwen / 智谱适配。国内站、海外站、私有化部署的模型端点，配个 URL 和 Key 就行，实测 Agnes 3.0 Flash 通过。</p>
+        <span class="pill g">模型不绑定</span>
+      </div>
+      <div class="card">
+        <div class="ic">📦</div>
+        <h3>单文件 exe 分发</h3>
+        <p>PyInstaller 打出来的 Windows 单文件，不装 Python、不用 Docker。GUI 版与控制台版两种，Release 页直接下载。</p>
+        <span class="pill k">双击即用</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <h2>三步出报告</h2>
+    <p class="lead"><span class="tag">使用流程</span>从调研到报告，人类最笨的操作路径</p>
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        <div>
+          <h3>把调研内容写成文件</h3>
+          <p>每个部门一份文件，自然语言写清楚「当前流程、耗时、痛点」即可，不需要任何特殊格式。</p>
+          <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">复制</button><span class="cm"># 运营部.md —— 示例</span>
+<span class="cmd">## 用户增长</span>
+当前流程：人工分析渠道数据，手动制定投放策略
+耗时：每天约 2 小时
+痛点：数据量大，人工统计慢</div>
+          <p class="hint">支持 .md / .txt / .docx / .json，混合来源都行</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <div>
+          <h3>配一次 Key（只配一次）</h3>
+          <p>环境变量或本地 config.local.yaml 任选其一，之后程序直接跑。</p>
+          <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">复制</button><span class="cm"># 方式 A：环境变量（Windows cmd）</span>
+<span class="cmd">set</span> LLM_API_KEY=sk-xxxx
+<span class="cmd">set</span> LLM_PROVIDER=openai
+<span class="cmd">set</span> LLM_BASE_URL=https://api.agnes-ai.cn/v1
+<span class="cmd">set</span> LLM_MODEL_NAME=agnes-3.0-flash
+
+<span class="cm"># 方式 B：config.local.yaml（与程序同目录，已 gitignore）</span>
+model:
+  provider: "openai"
+  api_key: "sk-xxxx"</div>
+          <p class="hint">配优先级：命令行参数 &gt; 环境变量 &gt; config.local.yaml &gt; config.yaml</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <div>
+          <h3>跑一下，收报告</h3>
+          <p>GUI 版：双击 exe → 选文件 → 提交 → 等报告。CLI 版：一条命令。</p>
+          <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">复制</button><span class="cmd">python</span> main.py                                <span class="cm"># 启动 GUI（傻瓜模式）</span>
+<span class="cmd">python</span> main.py --cli departments      <span class="cm"># 冒烟：列 5 个部门模板，不要 Key</span>
+<span class="cmd">python</span> main.py --cli analyze --input 客服部.md --output-format json
+<span class="cmd">python</span> main.py --cli pack-skill       <span class="cm"># 打包成 Skill 分发</span>
+<span class="cm"># 报告落在 ./output/report_时间戳.格式</span></div>
+          <p class="hint">缺 Key 不崩：GUI 提交时弹窗提示，CLI 友好报错并给出机器可读 code</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="wrap">
+    <h2>报告长什么样</h2>
+    <p class="lead"><span class="tag">真实样例</span>以下为用客服部调研样例（fixtures/survey_kefu.md）真实调用 LLM 跑出的结果，非演示数据</p>
+    <div class="report-demo">
+      <div class="bar">
+        <i class="r"></i><i class="y"></i><i class="g"></i>
+        <span class="fname">output/report_20261017_080800.md</span>
+      </div>
+      <div class="body">
+        <h4>AI 业务调研提效分析报告 — 客服部</h4>
+        <div class="meta">生成时间 2026-10-17 08:08 · 模型 agnes-3.0-flash · 置信度 90%</div>
+        <div class="kpis">
+          <div class="kpi"><div class="v">1</div><div class="l">分析部门数</div></div>
+          <div class="kpi"><div class="v or">4</div><div class="l">识别痛点</div></div>
+          <div class="kpi"><div class="v gr">2</div><div class="l">AI 提效机会点</div></div>
+          <div class="kpi"><div class="v gr">2</div><div class="l">高优先级（≥3）</div></div>
+        </div>
+        <div class="opp">
+          <div class="pri p5">5 / 5</div>
+          <div>
+            <div class="tt">工单分派与回复 — 部署 NLP 智能路由 + 大模型知识库</div>
+            <div class="dd">分派准确率提升至 95% 以上；重复问题（占 60%）AI 自动回复，处理时间缩短 70% · 难度：中 · ROI：高 · 周期：1-2 个月</div>
+          </div>
+        </div>
+        <div class="opp">
+          <div class="pri p4">4 / 5</div>
+          <div>
+            <div class="tt">质检与复盘 — ASR 语音转写 + LLM 全量质检</div>
+            <div class="dd">质检覆盖率从人工抽检提升至全量，月底加班质检场景消除 · 难度：中 · ROI：高</div>
+          </div>
+        </div>
+        <div class="meta">痛点摘要：人工分派错派率高 / 重复问题逐条人工回复 / 高峰 12 名客服扛 &gt;100 单每日 / 月底加班质检 —— 完整内容以报告文件为准。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="matrix">
+  <div class="wrap">
+    <h2>支持矩阵</h2>
+    <p class="lead"><span class="tag">兼容性</span>输入、输出、模型、平台全支持</p>
+    <table>
+      <tr><th>维度</th><th>支持项</th></tr>
+      <tr><td>输入格式</td><td><span class="ok">✓</span> Markdown · TXT · Word(.docx) · JSON</td></tr>
+      <tr><td>输出格式</td><td><span class="ok">✓</span> Markdown · Excel(.xlsx) · JSON（标准 JSON，可程序化消费）</td></tr>
+      <tr><td>部门模板</td><td><span class="ok">✓</span> 运营 / 客服 / 设计 / 仓储 / 财务（内置 5 套，可自定义扩展）</td></tr>
+      <tr><td>LLM 提供商</td><td><span class="ok">✓</span> 任意 OpenAI 兼容端点 · 内置 Qwen / 智谱适配（含国内 Agnes 端点实测）</td></tr>
+      <tr><td>配置方式</td><td><span class="ok">✓</span> 命令行参数 &gt; 环境变量 &gt; config.local.yaml &gt; config.yaml，五级回退</td></tr>
+      <tr><td>运行形态</td><td><span class="ok">✓</span> Python 源码 · PyInstaller 单文件 exe（GUI / 控制台双版本）· Skill 包</td></tr>
+      <tr><td>平台</td><td><span class="ok">✓</span> Windows（exe 实测）· macOS / Linux（源码形态）</td></tr>
+      <tr><td>测试</td><td><span class="ok">✓</span> 146 用例全离线（约 2 秒）+ 真 LLM 端到端冒烟脚本</td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="agent">
+  <div class="wrap">
+    <h2>AI Agent 接入设计</h2>
+    <p class="lead"><span class="tag">为 Agent 而造</span>不是给人看的日志堆，是可程序化操作的一切</p>
+    <div class="grid c2">
+      <div class="card">
+        <span class="pill b">可机读</span>
+        <h3>JSON 结构化日志</h3>
+        <p>./logs/app.log 每行一个 JSON 事件（timestamp / level / message / event），jq 一行命令过滤任意事件，不用 grep 人眼找。</p>
+      </div>
+      <div class="card">
+        <span class="pill g">可判定</span>
+        <h3>固定错误 code + 退出码</h3>
+        <p>LLM_API_KEY_MISSING、TEMPLATE_NOT_FOUND 等固定 code，Agent 看到 code 就知道该让用户干什么，不用猜报错文本。CLI 失败 exit≠0 且无裸 traceback。</p>
+      </div>
+      <div class="card">
+        <span class="pill p">可监听</span>
+        <h3>事件总线 5 事件</h3>
+        <p>TEMPLATE_LOADED / DATA_COLLECTED / ANALYSIS_DONE / REPORT_GENERATED / PACK_DONE，测试与自动化可订阅事件验收，不用轮询文件系统。</p>
+      </div>
+      <div class="card">
+        <span class="pill o">可验收</span>
+        <h3>固定产物路径 + SOP</h3>
+        <p>日志 ./logs/app.log、报告 ./output/、缓存 ./cache.db 三处固定。开发手册 §二十六 给 Agent 完整 SOP：冒烟 → 全量测试 → 按 code 定位层 → 只改源码 → 复验。</p>
+      </div>
+    </div>
+    <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">复制</button><span class="cm"># Agent 巡检三板斧（详见开发手册 §二十五）</span>
+<span class="cmd">jq</span> 'select(.level=="ERROR")' logs/app.log           <span class="cm"># 最近所有错误</span>
+<span class="cmd">jq</span> 'select(.event=="REPORT_GENERATED")' logs/app.log <span class="cm"># 最近一次报告产物路径</span>
+<span class="cmd">python</span> main.py --cli analyze --input 调研.md --output-format json  <span class="cm"># 失败时看 code</span></div>
+  </div>
+</section>
+
+<section id="quality">
+  <div class="wrap">
+    <h2>质量保障</h2>
+    <p class="lead"><span class="tag">可信</span>开源 · 可验证 · 分层清晰</p>
+    <div class="stats">
+      <div class="stat"><div class="v">146</div><div class="l">离线测试用例（约 2s）</div></div>
+      <div class="stat"><div class="v">9+</div><div class="l">发版 tag（v0.1.0 → v0.9.x）</div></div>
+      <div class="stat"><div class="v">5</div><div class="l">层架构 domain→infra→core→entry→output</div></div>
+      <div class="stat"><div class="v">MIT</div><div class="l">开源协议，可自由商用</div></div>
+    </div>
+    <div class="grid c3" style="margin-top:18px">
+      <div class="card"><div class="ic">🧪</div><h3>全离线测试</h3><p>LLM 用确定性桩替代，146 用例不联网 2 秒跑完，CI / Agent 改完代码立刻回归。</p></div>
+      <div class="card"><div class="ic">🌐</div><h3>真 LLM 冒烟</h3><p>scripts/e2e_real_llm.py：3 输入 × 3 输出格式实跑分析 + 校验报告内容，退出码即验收结果。</p></div>
+      <div class="card"><div class="ic">📜</div><h3>完整过程记录</h3><p>CHANGELOG 逐版本、开发手册 29 章（含 Agent SOP 与仓库维护规范），每段能力都有对应 tag。</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><span class="repo">github.com/openclawzhangchong/AI-yewu-diaoyan</span> · MIT License · Python + Tkinter + LLM</p>
+    <p style="margin-top:6px">仓库含：源码 · 开发手册 · 测试 · 打包脚本 · exe 下载（Releases）· Skill 打包命令</p>
+  </div>
+</footer>
+
+<script>
+  function copyCode(btn) {
+    const code = btn.parentElement.textContent.replace('复制', '').trim();
+    navigator.clipboard.writeText(code).then(() => {
+      btn.textContent = '已复制 ✓';
+      btn.parentElement.classList.add('flash');
+      setTimeout(() => { btn.textContent = '复制'; btn.parentElement.classList.remove('flash'); }, 1600);
+    });
+  }
+</script>
+
+</body>
+</html>
