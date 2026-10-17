@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `LICENSE`（MIT）入仓；`pyproject.toml` 补齐 `readme` / `license` 元数据，版本号对齐 0.9.0
 - GitHub 仓库描述与 Topics 标签补齐（python / llm / tkinter / skill / ai-efficiency 等）
 - `scripts/e2e_real_llm.py` 真 LLM 端到端冒烟脚本（需 Key，覆盖 3 种输入 × 3 种输出格式，退出码 0 即全过），已实测 3/3 通过
+- 产品演示页 `docs/index.html` 部署至 here.now：<https://civic-mantra-45xj.here.now/>，README 已挂链
 
 ## [v0.9.0] - 2026-10-17
 
