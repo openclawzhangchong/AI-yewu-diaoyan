@@ -255,6 +255,49 @@ class TestConfigManager:
         # yaml 未在 env 中出现的字段保留
         assert cfg.analysis.timeout_seconds == 120
 
+    def test_local_yaml_overrides_main_yaml(self, tmp_path):
+        main_path = tmp_path / "config.yaml"
+        main_path.write_text(
+            json.dumps({"model": {"provider": "zhipu", "api_key": "yaml-key"}}),
+            encoding="utf-8",
+        )
+        local_path = tmp_path / "config.local.yaml"
+        local_path.write_text(
+            json.dumps({"model": {"api_key": "local-key", "model_name": "glm-4"}}),
+            encoding="utf-8",
+        )
+        cm = ConfigManager(config_path=str(main_path))
+        cfg = cm.load()
+        # local 覆盖主 yaml 的同名字段
+        assert cfg.model.api_key == "local-key"
+        assert cfg.model.model_name == "glm-4"
+        # local 未出现的字段保留主 yaml 值
+        assert cfg.model.provider == "zhipu"
+
+    def test_env_overrides_local_yaml(self, tmp_path, monkeypatch):
+        main_path = tmp_path / "config.yaml"
+        main_path.write_text(json.dumps({}), encoding="utf-8")
+        local_path = tmp_path / "config.local.yaml"
+        local_path.write_text(
+            json.dumps({"model": {"api_key": "local-key"}}),
+            encoding="utf-8",
+        )
+        monkeypatch.setenv("LLM_API_KEY", "env-key")
+        cm = ConfigManager(config_path=str(main_path))
+        cfg = cm.load()
+        # 环境变量 > local yaml
+        assert cfg.model.api_key == "env-key"
+
+    def test_missing_local_yaml_is_noop(self, tmp_path):
+        main_path = tmp_path / "config.yaml"
+        main_path.write_text(
+            json.dumps({"model": {"api_key": "yaml-key"}}),
+            encoding="utf-8",
+        )
+        cm = ConfigManager(config_path=str(main_path))
+        cfg = cm.load()
+        assert cfg.model.api_key == "yaml-key"
+
     def test_cli_args_override_env_and_yaml(self, tmp_path, monkeypatch):
         yaml_path = tmp_path / "config.yaml"
         yaml_path.write_text(

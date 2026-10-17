@@ -15,21 +15,24 @@ uv sync
 ```bash
 # 方式1：环境变量（推荐，Windows 下用 set）
 set LLM_API_KEY=sk-xxx
-set LLM_PROVIDER=qwen
-set LLM_MODEL_NAME=qwen-max
+set LLM_PROVIDER=openai
+set LLM_BASE_URL=https://api.agnes-ai.cn/v1
+set LLM_MODEL_NAME=agnes-3.0-flash
 ```
 ```yaml
-# 方式2：config.yaml
+# 方式2：config.local.yaml（本地密钥，已被 .gitignore 忽略，不会进版本库；
+# 字段与 config.yaml 相同，只写需要覆盖的部分即可）
 model:
-  provider: "qwen"
+  provider: "openai"
   api_key: "sk-xxx"
-  model_name: "qwen-max"
+  base_url: "https://api.agnes-ai.cn/v1"
+  model_name: "agnes-3.0-flash"
 ```
 ```
 # 方式3：交互式引导
 python main.py --cli quick-start
 ```
-> 配置优先级：命令行参数 > 环境变量 > config.yaml > 内置默认。
+> 配置优先级：命令行参数 > 环境变量 > config.local.yaml > config.yaml > 内置默认。
 
 ### 3. 准备调研总结
 把各部门的调研内容写成 Markdown / TXT / Word / JSON 文件即可（无需特殊格式，自然语言描述当前流程、耗时、痛点）：

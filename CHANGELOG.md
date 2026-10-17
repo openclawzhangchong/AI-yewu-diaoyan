@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.9.0] - 2026-10-17
+
+### Added
+- `config.local.yaml` 本地密钥支持：与 `config.yaml` 同目录同结构，只写需要覆盖的字段，已被 `.gitignore` 忽略（新增 3 个单测覆盖优先级）
+- 配置优先级链更新为：命令行 > 环境变量 > `config.local.yaml` > `config.yaml` > 内置默认
+- 真实 LLM 端到端验证：agnes-3.0-flash（OpenAI 兼容，`LLM_BASE_URL=https://api.agnes-ai.cn/v1`）markdown / json / excel 三种输出格式全部实测通过
+- README 与开发手册（§七配置说明、§十九 API Key 指引、§二十五 Agent 约定）同步为新配置语义与环境变量名
+
+### Fixed
+- 报告 `generated_at` 缺失（Markdown 渲染出"未指定"）：CLI/GUI 构造 `FullAnalysisReport` 时补 `generated_at`
+- 清理 cli.py 中 `__import__("datetime")` 内联写法，改为顶部标准 import
+
+---
+
 ## [v0.8.0] - 2026-10-17
 
 ### Added

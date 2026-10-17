@@ -20,6 +20,7 @@ from __future__ import annotations
 import json
 import sys
 import traceback
+from datetime import datetime
 from pathlib import Path
 
 import click
@@ -203,11 +204,12 @@ def analyze(
                 1 for op in result.opportunities if op.priority >= 3
             ),
             overall_summary=result.summary,
+            generated_at=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         )
 
         output_path = Path(config.output.directory)
         output_path.mkdir(parents=True, exist_ok=True)
-        timestamp = __import__("datetime").datetime.now().strftime("%Y%m%d_%H%M%S")
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
         # 根据选择生成不同格式
         fmt = output_format or config.output.default_format

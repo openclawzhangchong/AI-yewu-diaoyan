@@ -317,6 +317,7 @@ class App:
                     1 for op in result.opportunities if op.priority >= 3
                 ),
                 overall_summary=result.summary,
+                generated_at=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             )
 
             if format_choice == "Excel":

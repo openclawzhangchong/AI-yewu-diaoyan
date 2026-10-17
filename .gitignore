@@ -76,7 +76,7 @@ logs/
 
 # Output（只忽略运行时生成的报告，保留源码）
 output/reports/
-output/*.xlsx
+output/report_*
 
 # 运行时生成数据
 collected_data*.json

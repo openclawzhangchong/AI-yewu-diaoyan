@@ -1,4 +1,4 @@
-"""配置管理 — 命令行 > 环境变量 > config.yaml > 默认值"""
+"""配置管理 — 命令行 > 环境变量 > config.local.yaml > config.yaml > 默认值"""
 
 from __future__ import annotations
 
@@ -44,6 +44,8 @@ class ConfigManager:
         # 1. 内置默认值（已在 __init__ 创建）
         # 2. config.yaml
         self._load_from_yaml()
+        # 2.5 config.local.yaml（本地覆盖，不入版本库，优先级高于 config.yaml）
+        self._load_from_local_yaml()
         # 3. 环境变量
         self._load_from_env()
         # 4. 命令行参数（由 set_from_args 处理，优先级最高，重新应用）
@@ -51,6 +53,22 @@ class ConfigManager:
             self._apply_args()
 
         return self._config
+
+    def _local_yaml_path(self) -> str:
+        base = os.path.splitext(self._config_path)[0]
+        return f"{base}.local.yaml"
+
+    def _load_from_local_yaml(self) -> None:
+        """加载 config.local.yaml（若存在），字段覆盖同名 config.yaml 值。"""
+        path = self._local_yaml_path()
+        if not os.path.isfile(path):
+            return
+        with open(path, "r", encoding="utf-8") as f:
+            data = yaml.safe_load(f)
+        if not data:
+            return
+        # 复用 yaml 解析逻辑：把 local 数据合入主路径的加载器
+        self._apply_yaml_data(data)
 
     def _load_from_yaml(self) -> None:
         """从 config.yaml 加载配置"""
@@ -61,6 +79,10 @@ class ConfigManager:
         with open(path, "r", encoding="utf-8") as f:
             data = yaml.safe_load(f)
 
+        self._apply_yaml_data(data)
+
+    def _apply_yaml_data(self, data: dict) -> None:
+        """把 yaml 数据应用到配置对象（config.yaml 与 config.local.yaml 共用）。"""
         if data is None:
             return
 
