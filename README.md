@@ -120,7 +120,11 @@ python main.py --cli pack-skill --mode light --output ./ai-efficiency-skill
 
 ## 测试
 ```bash
-uv run pytest -q   # 143 个用例，全离线可跑（LLM 用桩替换，无需 API Key）
+# 离线全量测试（LLM 用桩替换，无需 API Key，约 2 秒）
+uv run pytest -q
+
+# 真 LLM 端到端冒烟（需 Key，走 config.local.yaml 或 LLM_API_KEY 环境变量，联网）
+uv run python scripts/e2e_real_llm.py
 ```
 
 ## 许可证
