@@ -133,5 +133,11 @@ uv run python scripts/e2e_real_llm.py
 
 内容涵盖：能力总览、三步使用流程、真实报告样例、支持矩阵、Agent 接入设计、质量保障。
 
+演示页支持深 / 浅双主题切换，页面截图如下：
+
+| 深色主题（默认） | 浅色主题 |
+| --- | --- |
+| ![产品演示页 · 深色主题](docs/assets/preview-dark.png) | ![产品演示页 · 浅色主题](docs/assets/preview-light.png) |
+
 ## 许可证
 MIT License
