@@ -75,6 +75,21 @@
   }
   #themeToggle:hover { border-color: var(--accent); }
 
+  /* ---------- GitHub 访问码门控 ---------- */
+  .gate-mask{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999}
+  .gate-mask.on{display:flex}
+  .gate-box{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:26px 28px;max-width:340px;width:90%;text-align:center}
+  .gate-box h3{margin:0 0 6px;font-size:18px}
+  .gate-box .gate-sub{font-size:13px;color:var(--muted);margin:0 0 14px}
+  .gate-box input{width:100%;box-sizing:border-box;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--code-bg);color:var(--text);font-size:16px;letter-spacing:4px;text-align:center;outline:none}
+  .gate-box input:focus{border-color:var(--accent)}
+  .gate-err{color:#f85149;font-size:13px;margin:10px 0 0;min-height:18px}
+  .gate-btns{display:flex;gap:10px;margin-top:14px}
+  .gate-btns button{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);cursor:pointer;font-size:14px;background:var(--code-bg);color:var(--text)}
+  .gate-btns button.confirm{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+  .authorline{margin-top:10px;font-size:13px;color:var(--muted)}
+  .authorline strong{color:var(--text)}
+
   /* ---------- Hero ---------- */
   header {
     padding: 84px 0 64px;
@@ -254,7 +269,7 @@
       <li><a href="#quality">质量保障</a></li>
     </ul>
     <button id="themeToggle" title="切换深/浅色" aria-label="切换主题">🌙</button>
-    <a class="badge" href="https://github.com/openclawzhangchong/AI-yewu-diaoyan">GitHub ★</a>
+    <a class="badge ghlink" data-url="https://github.com/openclawzhangchong/AI-yewu-diaoyan">GitHub ★</a>
   </div>
 </nav>
 
@@ -277,8 +292,8 @@
       <div class="pipe-node"><div class="ic">📊</div><div class="t">正式报告</div><div class="d">Markdown / Excel / JSON</div></div>
     </div>
     <div class="btns">
-      <a class="btn primary" href="https://github.com/openclawzhangchong/AI-yewu-diaoyan">GitHub 仓库（开源 · MIT）</a>
-      <a class="btn" href="https://github.com/openclawzhangchong/AI-yewu-diaoyan/releases">下载 Windows 安装包（exe）</a>
+      <a class="btn primary ghlink" data-url="https://github.com/openclawzhangchong/AI-yewu-diaoyan">GitHub 仓库（独家设计）</a>
+      <a class="btn ghlink" data-url="https://github.com/openclawzhangchong/AI-yewu-diaoyan/releases">下载 Windows 安装包（exe）</a>
       <a class="btn" href="#how">快速上手 ↓</a>
     </div>
   </div>
@@ -473,12 +488,12 @@ model:
 <section id="quality">
   <div class="wrap">
     <h2>质量保障</h2>
-    <p class="lead"><span class="tag">可信</span>开源 · 可验证 · 分层清晰</p>
+    <p class="lead"><span class="tag">可信</span>独家设计 · 可验证 · 分层清晰</p>
     <div class="stats">
       <div class="stat"><div class="v">146</div><div class="l">离线测试用例（约 2s）</div></div>
       <div class="stat"><div class="v">9+</div><div class="l">发版 tag（v0.1.0 → v0.9.x）</div></div>
       <div class="stat"><div class="v">5</div><div class="l">层架构 domain→infra→core→entry→output</div></div>
-      <div class="stat"><div class="v">MIT</div><div class="l">开源协议，可自由商用</div></div>
+      <div class="stat"><div class="v">独家</div><div class="l">独家设计成果</div></div>
     </div>
     <div class="grid c3" style="margin-top:18px">
       <div class="card"><div class="ic">🧪</div><h3>全离线测试</h3><p>LLM 用确定性桩替代，146 用例不联网 2 秒跑完，CI / Agent 改完代码立刻回归。</p></div>
@@ -490,10 +505,25 @@ model:
 
 <footer>
   <div class="wrap">
-    <p><span class="repo">github.com/openclawzhangchong/AI-yewu-diaoyan</span> · MIT License · Python + Tkinter + LLM</p>
+    <p><span class="repo">github.com/openclawzhangchong/AI-yewu-diaoyan</span> · 独家设计 · Python + Tkinter + LLM</p>
     <p style="margin-top:6px">仓库含：源码 · 开发手册 · 测试 · 打包脚本 · exe 下载（Releases）· Skill 打包命令</p>
+    <p class="authorline">作者：<strong>张翀</strong>（18596950010）</p>
   </div>
 </footer>
+
+  <!-- GitHub 链接访问码门控：输入作者预留的访问码后才跳转 -->
+  <div class="gate-mask" id="gateMask">
+    <div class="gate-box">
+      <h3>🔒 访问码确认</h3>
+      <p class="gate-sub">本系统为张翀独家设计，请输入访问码确认后方可前往 GitHub。</p>
+      <input type="password" id="gateInput" placeholder="访问码" autocomplete="off">
+      <p class="gate-err" id="gateErr"></p>
+      <div class="gate-btns">
+        <button type="button" id="gateCancel">取消</button>
+        <button type="button" class="confirm" id="gateConfirm">确认跳转</button>
+      </div>
+    </div>
+  </div>
 
 <script>
   // 主题切换：深色(默认) / 浅色，选择记忆在 localStorage
@@ -524,6 +554,49 @@ model:
       setTimeout(() => { btn.textContent = '复制'; btn.parentElement.classList.remove('flash'); }, 1600);
     });
   }
+
+  // GitHub 链接门控：点击先弹访问码，输入正确才跳转
+  (function () {
+    const CODE = '18596950010';
+    const mask = document.getElementById('gateMask');
+    const input = document.getElementById('gateInput');
+    const err = document.getElementById('gateErr');
+    let target = null;
+
+    document.querySelectorAll('a.ghlink').forEach((a) => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        target = a;
+        input.value = '';
+        err.textContent = '';
+        mask.classList.add('on');
+        input.focus();
+      });
+    });
+
+    document.getElementById('gateCancel').addEventListener('click', () => {
+      mask.classList.remove('on');
+      target = null;
+    });
+    document.getElementById('gateConfirm').addEventListener('click', () => {
+      if (input.value === CODE) {
+        mask.classList.remove('on');
+        const url = target && target.dataset.url;
+        target = null;
+        if (url) window.open(url, '_blank', 'noopener');
+      } else {
+        err.textContent = '访问码不正确，请重新输入。';
+        input.select();
+      }
+    });
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('gateConfirm').click();
+      if (e.key === 'Escape') document.getElementById('gateCancel').click();
+    });
+    mask.addEventListener('click', (e) => {
+      if (e.target === mask) document.getElementById('gateCancel').click();
+    });
+  })();
 </script>
 
 </body>
