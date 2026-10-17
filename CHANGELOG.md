@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.9.1] - 2026-10-17
+
+### Added
+- `LICENSE`（MIT）入仓；`pyproject.toml` 补齐 `readme` / `license` 元数据，版本号对齐 0.9.0
+- GitHub 仓库描述与 Topics 标签补齐（python / llm / tkinter / skill / ai-efficiency 等）
+
 ## [v0.9.0] - 2026-10-17
 
 ### Added
