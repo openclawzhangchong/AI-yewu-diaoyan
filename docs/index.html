@@ -316,7 +316,7 @@
       <div class="card">
         <div class="ic">🔌</div>
         <h3>任意 LLM 可接</h3>
-        <p>OpenAI 兼容协议 + 内置 Qwen / 智谱适配。国内站、海外站、私有化部署的模型端点，配个 URL 和 Key 就行，实测 Agnes 3.0 Flash 通过。</p>
+        <p>OpenAI 兼容协议 + 内置 Qwen / 智谱适配。国内站、海外站、私有化部署的模型端点，配个 URL 和 Key 就行，国内外端点均实测通过。</p>
         <span class="pill g">模型不绑定</span>
       </div>
       <div class="card">
@@ -355,8 +355,7 @@
           <div class="codeblock"><button class="copybtn" onclick="copyCode(this)">复制</button><span class="cm"># 方式 A：环境变量（Windows cmd）</span>
 <span class="cmd">set</span> LLM_API_KEY=sk-xxxx
 <span class="cmd">set</span> LLM_PROVIDER=openai
-<span class="cmd">set</span> LLM_BASE_URL=https://api.agnes-ai.cn/v1
-<span class="cmd">set</span> LLM_MODEL_NAME=agnes-3.0-flash
+<span class="cmd">set</span> LLM_MODEL_NAME=gpt-4o-mini
 
 <span class="cm"># 方式 B：config.local.yaml（与程序同目录，已 gitignore）</span>
 model:
@@ -393,7 +392,7 @@ model:
       </div>
       <div class="body">
         <h4>AI 业务调研提效分析报告 — 客服部</h4>
-        <div class="meta">生成时间 2026-10-17 08:08 · 模型 agnes-3.0-flash · 置信度 90%</div>
+        <div class="meta">生成时间 2026-10-17 08:08 · 模型 gpt-4o-mini · 置信度 90%</div>
         <div class="kpis">
           <div class="kpi"><div class="v">1</div><div class="l">分析部门数</div></div>
           <div class="kpi"><div class="v or">4</div><div class="l">识别痛点</div></div>
@@ -429,7 +428,7 @@ model:
       <tr><td>输入格式</td><td><span class="ok">✓</span> Markdown · TXT · Word(.docx) · JSON</td></tr>
       <tr><td>输出格式</td><td><span class="ok">✓</span> Markdown · Excel(.xlsx) · JSON（标准 JSON，可程序化消费）</td></tr>
       <tr><td>部门模板</td><td><span class="ok">✓</span> 运营 / 客服 / 设计 / 仓储 / 财务（内置 5 套，可自定义扩展）</td></tr>
-      <tr><td>LLM 提供商</td><td><span class="ok">✓</span> 任意 OpenAI 兼容端点 · 内置 Qwen / 智谱适配（含国内 Agnes 端点实测）</td></tr>
+      <tr><td>LLM 提供商</td><td><span class="ok">✓</span> 任意 OpenAI 兼容端点 · 内置 Qwen / 智谱适配（国内外端点实测）</td></tr>
       <tr><td>配置方式</td><td><span class="ok">✓</span> 命令行参数 &gt; 环境变量 &gt; config.local.yaml &gt; config.yaml，五级回退</td></tr>
       <tr><td>运行形态</td><td><span class="ok">✓</span> Python 源码 · PyInstaller 单文件 exe（GUI / 控制台双版本）· Skill 包</td></tr>
       <tr><td>平台</td><td><span class="ok">✓</span> Windows（exe 实测）· macOS / Linux（源码形态）</td></tr>
