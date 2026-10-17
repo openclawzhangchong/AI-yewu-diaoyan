@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.9.5] - 2026-10-17
+
+### Added
+- 产品演示页 `docs/index.html` 支持深/浅双主题：右上角 🌙/☀️ 按钮一键切换，选择存 localStorage，页面打开前恢复避免闪烁
+- 同步更新 here.now 在线演示页（同 slug `civic-mantra-45xj`，版本更新不产生新网址）
+
+---
+
 ## [v0.9.1] - 2026-10-17
 
 ### Added
