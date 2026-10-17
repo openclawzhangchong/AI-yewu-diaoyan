@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - 报告 `generated_at` 缺失（Markdown 渲染出"未指定"）：CLI/GUI 构造 `FullAnalysisReport` 时补 `generated_at`
 - 清理 cli.py 中 `__import__("datetime")` 内联写法，改为顶部标准 import
+- Windows GBK 控制台崩溃：进度条 `█`/`░` 与 `✓` 等字符在输出重定向/GBK 控制台下触发 `UnicodeEncodeError`，改为 ASCII `#`/`-`/`√`；`main.py` 入口对 stdout/stderr 做 UTF-8 reconfigure 双保险
 
 ---
 

@@ -52,13 +52,13 @@ def _print_header(title: str, subtitle: str = "") -> None:
 
 
 def _print_progress(current: float, total: float, label: str = "") -> None:
-    """打印进度条。"""
+    """打印进度条（ASCII 字符，兼容 GBK 控制台与重定向输出）。"""
     percent = current / total * 100 if total > 0 else 0
     bar_width = 40
     filled = int(bar_width * percent / 100)
-    bar = "[green]" + "█" * filled + "[dim]" + "░" * (bar_width - filled) + "[/]"
+    bar = "[green]" + "#" * filled + "[dim]" + "-" * (bar_width - filled) + "[/]"
     if label:
-        console.print(f"{bar} {percent:.0f}% — {label}")
+        console.print(f"{bar} {percent:.0f}% - {label}")
     else:
         console.print(f"{bar} {percent:.0f}%")
 
@@ -70,7 +70,7 @@ def _print_error(msg: str) -> None:
 
 def _print_success(msg: str) -> None:
     """打印成功信息。"""
-    console.print(f"[green]✓ {msg}[/green]")
+    console.print(f"[green]√ {msg}[/green]")
 
 
 @click.group()
@@ -324,7 +324,7 @@ def collect(template: str | None) -> None:
     data_collector = DataCollector()
     try:
         answers = data_collector.collect_interactive(tpl)
-        console.print("\n[green]✓ 数据采集完成![/green]")
+        console.print("\n[green]√ 数据采集完成![/green]")
         console.print(f"  共采集 {len(answers)} 个问题的答案")
 
         # 询问是否保存
@@ -334,7 +334,7 @@ def collect(template: str | None) -> None:
             if not output_path:
                 output_path = "./collected_data.json"
             data_collector.export({"answers": answers}, output_path)
-            console.print(f"[green]✓ 数据已保存: {output_path}[/green]")
+            console.print(f"[green]√ 数据已保存: {output_path}[/green]")
     except KeyboardInterrupt:
         console.print("\n[red]采集已取消[/red]")
         sys.exit(0)
@@ -417,7 +417,7 @@ def quick_start() -> None:
         # 保存到环境变量
         import os
         os.environ["LLM_API_KEY"] = api_key
-        console.print("  [green]✓ API Key 已设置[/green]")
+        console.print("  [green]√ API Key 已设置[/green]")
 
     # 2. 选择模型
     console.print("\n[bold]2. 选择 AI 模型[/bold]")
@@ -460,7 +460,7 @@ def quick_start() -> None:
 痛点：内容创作效率低，审核标准不一
 """
         Path(example_file).write_text(example_content, encoding="utf-8")
-        console.print(f"  [green]✓ 已创建示例文件: {example_file}[/green]")
+        console.print(f"  [green]√ 已创建示例文件: {example_file}[/green]")
     else:
         console.print(f"  [yellow]示例文件已存在: {example_file}[/yellow]")
 
